@@ -33,6 +33,8 @@ public class Potions : BarkModule
     private GameObject bottlePrefab, shrinkPotion, growPotion;
 
     private float cachedSize;
+    private Vector3 originalGravity;
+    private bool gravityCaptured;
     private Transform holsterL, holsterR;
     private Material shrinkMaterial, growMaterial;
 
@@ -55,6 +57,8 @@ public class Potions : BarkModule
 
     private void FixedUpdate()
     {
+        ApplyGravity();
+
         if (cachedSize == GTPlayer.Instance.scale) return;
         NetworkPropertyHandler.Instance.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
         cachedSize = GTPlayer.Instance.scale;
@@ -63,6 +67,7 @@ public class Potions : BarkModule
     protected override void OnEnable()
     {
         if (!MenuController.Instance.Built) return;
+        CaptureGravity();
         NetworkPropertyHandler.Instance.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
         base.OnEnable();
         active = false;
@@ -85,6 +90,31 @@ public class Potions : BarkModule
             }
 
             ;
+        }
+
+
+
+
+    
+        private void CaptureGravity()
+        {
+            if (gravityCaptured) return;
+            originalGravity = Physics.gravity;
+            gravityCaptured = true;
+        }
+
+        private void ApplyGravity()
+        {
+            if (!gravityCaptured) return;
+            // Bigger = heavier gravity, smaller = floatier
+            Physics.gravity = originalGravity * Mathf.Clamp(GTPlayer.Instance.scale, .03f, 20f);
+        }
+
+        private void RestoreGravity()
+        {
+            if (!gravityCaptured) return;
+            Physics.gravity = originalGravity;
+            gravityCaptured = false;
         }
 
         foreach (var manager in FindObjectsOfType<SizeManager>())
@@ -212,6 +242,7 @@ public class Potions : BarkModule
         try
         {
             active = false;
+            RestoreGravity();
             holsterL?.gameObject?.Obliterate();
             holsterR?.gameObject?.Obliterate();
             shrinkPotion?.gameObject?.Obliterate();
