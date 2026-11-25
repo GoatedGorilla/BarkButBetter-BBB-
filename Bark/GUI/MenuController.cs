@@ -92,6 +92,7 @@ public class MenuController : BarkGrabbable
                 gameObject.AddComponent<SlipperyHands>(),
                 gameObject.AddComponent<DisableWind>(),
                 gameObject.AddComponent<UpsideDown>(),
+                gameObject.AddComponent<SlowMotion>(),
 
                 //// Teleportation
                 gameObject.AddComponent<Checkpoint>(),
