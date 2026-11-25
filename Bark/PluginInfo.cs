@@ -2,8 +2,8 @@
 
 internal static class PluginInfo
 {
-    public const string Guid = "com.kylethescientist.gorillatag.bark"; 
-    public const string Name = "Bark";
+    public const string Guid = "com.GoatedGorila.gorillatag.BBB"; 
+    public const string Name = "BarkButBetter";
     public const string Version = "3.0.2";
 
     public const string Description =
